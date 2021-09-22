@@ -81,6 +81,9 @@ find_package(Iconv)
 if(Iconv_FOUND)
   include_directories(${Iconv_INCLUDE_DIRS})
   list(APPEND THIRD_PARTY_LIBS Iconv::Iconv)
+  if(MSVC)
+    list(APPEND THIRD_PARTY_LIBS iconv)
+  endif()
 endif()
 list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${THIRD_PARTY_LIBS})
 
@@ -180,7 +183,10 @@ target_compile_definitions(trietool PRIVATE
   NO_AUTOCONF
   )
 
-target_link_libraries(trietool datrie)
+target_link_libraries(trietool
+  datrie
+  ${EXTRA_TARGET_LINK_LIBRARIES}
+  )
 
 set(LIBDATRIE_HEADERS
   datrie/alpha-map.h
