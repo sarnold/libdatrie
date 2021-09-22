@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.18)
 
+# Add cmake modules of this project to the module path
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
+
 # used for both library and pkgconfig file
 # Library versioning
 # Library code modified:                    REVISION++
@@ -81,7 +84,8 @@ include(FindIconv)
 
 if(ICONV_FOUND)
   include_directories(${ICONV_INCLUDE_DIR})
-  list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARY})
+  set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARY})
+  list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${${ICONV_LIBRARY}})
 endif()
 
 if(WITH_COVERAGE)
@@ -182,7 +186,7 @@ target_compile_definitions(trietool PRIVATE
 
 target_link_libraries(trietool
   datrie
-  ${EXTRA_TARGET_LINK_LIBRARIES}
+  ${CMAKE_REQUIRED_LIBRARIES}
   )
 
 set(LIBDATRIE_HEADERS

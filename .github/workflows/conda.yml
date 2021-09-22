@@ -24,7 +24,7 @@ jobs:
             generator: 'Ninja'
             build_type: 'RelWithDebInfo'
           - os: 'macos-latest'
-            generator: 'Ninja'
+            generator: 'Unix Makefiles'
             build_type: 'RelWithDebInfo'
           - os: 'windows-2016'
             generator: 'Visual Studio 15 2017 Win64'

@@ -7,49 +7,51 @@
 find_path(ICONV_INCLUDE_DIR
   NAMES iconv.h
   HINTS
-    ENV VCPKG_ROOT
-    ENV CONDA_PREFIX
+    ${CMAKE_PREFIX_PATH}
+    $ENV{CONDA_PREFIX}
+    $ENV{VCPKG_ROOT}
   PATH_SUFFIXES include include/iconv
   PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /opt/local
-  /opt
-  /usr
-  /usr/local/
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /opt/local
+    /opt
+    /usr
+    /usr/local/
 )
 
 find_library(ICONV_LIBRARY
-  NAMES iconv libiconv libiconv2
+  NAMES iconv libiconv libiconv2 c
   HINTS
-    ENV VCPKG_ROOT
-    ENV CONDA_PREFIX
+    ${CMAKE_PREFIX_PATH}
+    $ENV{CONDA_PREFIX}
+    $ENV{VCPKG_ROOT}
   PATH_SUFFIXES lib lib64 lib32
   PATHS
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /opt/local
-  /opt
-  /usr
-  /usr/local/
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /opt/local
+    /opt
+    /usr
+    /usr/local/
 )
 
 if(ICONV_INCLUDE_DIR AND NOT ICONV_LIBRARY)
   include(CheckFunctionExists)
   check_function_exists(iconv HAVE_ICONV_IN_LIBC)
   if(HAVE_ICONV_IN_LIBC)
-    set(HAVE_ICONV_IN_LIBC "${HAVE_ICONV_IN_LIBC}" PARENT_SCOPE)
-    set(ICONV_LIBRARY "bundled in local libc" PARENT_SCOPE)
+    set(HAVE_ICONV_IN_LIBC "${HAVE_ICONV_IN_LIBC}" CACHE INTERNAL "")
+    set(ICONV_LIBRARY "bundled in local libc" CACHE INTERNAL "")
   endif()
 endif()
 
 if(ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
-  set(ICONV_FOUND ON PARENT_SCOPE)
+  set(ICONV_FOUND ON CACHE INTERNAL "")
 endif()
 
-#include(FindPackageHandleStandardArgs)
-#find_package_handle_standard_args(ICONV
-  #REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(ICONV
+  REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR)
 
 if(ICONV_FOUND)
   # need if _FOUND guard to allow project to autobuild; can't overwrite imported target even if bad
