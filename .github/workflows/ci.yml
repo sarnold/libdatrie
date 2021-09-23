@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04, macos-latest, windows-2019]
         python-version: [3.7, 3.9]
 
     steps:
@@ -43,10 +43,12 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install tox
 
-    - name: Add 64-bit mingw-w64 to the PATH
+    - name: Install and setup MSYS2 mingw
       if: runner.os == 'Windows'
-      run: |
-        echo "c:/msys64/bin;c:/msys64/mingw64/bin" >> $GITHUB_PATH
+      uses: msys2/setup-msys2@v2     
+      with:
+        msystem: MINGW64
+        install: mingw-w64-x86_64-toolchain make gcc
 
     - name: Run tests
       if: runner.os != 'Windows'
@@ -56,7 +58,7 @@ jobs:
     - name: Run tests
       if: runner.os == 'Windows'
       run: |
-        tox -e win32 Ninja
+        tox -e win32
 
     #- name: Upload artifacts
       #uses: actions/upload-artifact@v2
