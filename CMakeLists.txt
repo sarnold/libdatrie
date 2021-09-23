@@ -70,22 +70,19 @@ include(GNUInstallDirs)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
 
-check_include_files(localcharset.h HAVE_LOCALE_CHARSET)
-check_include_files(langinfo.h HAVE_LANGINFO_CODESET)
-
-if(HAVE_LOCALE_CHARSET)
-  add_compile_definitions(HAVE_LOCALE_CHARSET)
-elseif(HAVE_LANGINFO_CODESET)
-  add_compile_definitions(HAVE_LANGINFO_CODESET)
-endif()
-
-#find_package(Iconv)
+include(CheckSymbolExists)
+include(CheckFunctionExists)
+include(CheckCSourceCompiles)
 include(FindIconv)
 
 if(ICONV_FOUND)
   include_directories(${ICONV_INCLUDE_DIR})
-  set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARY})
   list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${${ICONV_LIBRARY}})
+endif()
+
+check_include_files(langinfo.h HAVE_LANGINFO_CODESET)
+if(HAVE_LANGINFO_CODESET)
+  add_compile_definitions(HAVE_LANGINFO_CODESET)
 endif()
 
 if(WITH_COVERAGE)
