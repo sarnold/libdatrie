@@ -49,8 +49,14 @@ jobs:
         echo "c:/msys64/bin;c:/msys64/mingw64/bin" >> $GITHUB_PATH
 
     - name: Run tests
+      if: runner.os != 'Windows'
       run: |
-        tox -e ctest Ninja
+        tox -e ctest
+
+    - name: Run tests
+      if: runner.os == 'Windows'
+      run: |
+        tox -e win32 Ninja
 
     #- name: Upload artifacts
       #uses: actions/upload-artifact@v2

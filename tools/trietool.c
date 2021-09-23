@@ -271,7 +271,7 @@ decode_switch (int argc, char *argv[], ProgEnv *env)
                    strcmp (argv[opt_idx], "--version") == 0)
         {
             printf ("%s\n", VERSION);
-            exit (EXIT_FAILURE);
+            exit (EXIT_SUCCESS);
         } else if (strcmp (argv[opt_idx], "-p") == 0 ||
                    strcmp (argv[opt_idx], "--path") == 0)
         {
