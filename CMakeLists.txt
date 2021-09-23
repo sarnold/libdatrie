@@ -16,7 +16,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
 # LT_REVISION=0
 # LT_AGE=4
 
-set(PACKAGE_VERSION 0.2.13)
+set(VERSION 0.2.13)  # this is used for config.h and included by trietool
 set(LIBRARY_ABI_REV 4.0)
 set(LIBRARY_ABI_VERSION "5.${LIBRARY_ABI_REV}")  # not used here
 set(LIBRARY_SOVERSION 1)
@@ -26,11 +26,7 @@ if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif()
 
-if(SCM_VERSION_INFO)
-  set(PACKAGE_VERSION ${SCM_VERSION_INFO})
-endif()
-
-project(libdatrie LANGUAGES C CXX VERSION ${PACKAGE_VERSION})
+project(libdatrie LANGUAGES C CXX VERSION ${VERSION})
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -65,6 +61,7 @@ include(CheckIncludeFile)
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
 
+# start CONFIG_H checks
 set(STDC_HEADERS 1)
 check_include_file(dlfcn.h HAVE_DLFCN_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
@@ -83,6 +80,7 @@ check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
 check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
 check_function_exists(malloc HAVE_MALLOC)
 
+# generate CONFIG_H
 set(CONFIG_H ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CONFIG_H})
 
@@ -159,10 +157,6 @@ endif()
 add_library(datrie SHARED ${LIBDATRIE_SOURCES})
 add_library(Datrie::Datrie ALIAS datrie)
 
-# SCM_VERSION_INFO can be defined by cmake args and passed into the code as a
-# define here (see PACKAGE_VERSION near the top of this file)
-target_compile_definitions(datrie PRIVATE VERSION=${PACKAGE_VERSION})
-
 set_target_properties(datrie
   PROPERTIES
   VERSION ${LIBRARY_FULL_VERSION}
@@ -202,11 +196,6 @@ if(LIBDATRIE_BUILD_TESTING)
 endif()
 
 add_executable(trietool tools/trietool.c)
-target_compile_definitions(trietool PRIVATE
-  # displayed by printf as macro, must be a string
-  VERSION="${PACKAGE_VERSION}"
-  )
-
 target_link_libraries(trietool
   datrie
   ${EXTRA_TARGET_LINK_LIBRARIES}

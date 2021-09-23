@@ -75,7 +75,7 @@
 #cmakedefine STDC_HEADERS 1
 
 /* Version number of package */
-#cmakedefine VERSION "@PACKAGE_VERSION@"
+#cmakedefine VERSION "@VERSION@"
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #cmakedefine const
