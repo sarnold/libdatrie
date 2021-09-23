@@ -70,20 +70,38 @@ include(GNUInstallDirs)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
 
-include(CheckSymbolExists)
-include(CheckFunctionExists)
-include(CheckCSourceCompiles)
-include(FindIconv)
+#include(CheckSymbolExists)
+#include(CheckFunctionExists)
+#include(CheckCSourceCompiles)
+#include(FindIconv)
 
-if(ICONV_FOUND)
+#if(ICONV_FOUND)
+  #include_directories(${ICONV_INCLUDE_DIR})
+  #list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARY})
+#endif()
+
+find_path(ICONV_INCLUDE_DIR iconv.h)
+if(ICONV_INCLUDE_DIR)
   include_directories(${ICONV_INCLUDE_DIR})
-  list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${${ICONV_LIBRARY}})
 endif()
 
-check_include_files(langinfo.h HAVE_LANGINFO_CODESET)
-if(HAVE_LANGINFO_CODESET)
-  add_compile_definitions(HAVE_LANGINFO_CODESET)
+if(MSVC OR APPLE)
+  check_include_files(localcharset.h HAVE_LOCALE_CHARSET)
+  if(HAVE_LOCALE_CHARSET)
+    add_compile_definitions(HAVE_LOCALE_CHARSET)
+  endif()
+	find_library(ICONV_LIB iconv)
+	find_library(CHARSET_LIB charset)
+else()
+  check_include_files(langinfo.h HAVE_LANGINFO_CODESET)
+  if(HAVE_LANGINFO_CODESET)
+    add_compile_definitions(HAVE_LANGINFO_CODESET)
+  endif()
+	set(ICONV_LIB "")
+	set(CHARSET_LIB "")
 endif()
+
+list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
 
 if(WITH_COVERAGE)
     add_compile_options("--coverage")
@@ -134,7 +152,6 @@ target_link_libraries(datrie
 # define here (see PACKAGE_VERSION near the top of this file)
 target_compile_definitions(datrie PRIVATE VERSION=${PACKAGE_VERSION})
 
-# this looks weird, but needed for correct SOVERSION links
 set_target_properties(datrie
   PROPERTIES
   VERSION ${LIBRARY_FULL_VERSION}
@@ -167,7 +184,7 @@ if(LIBDATRIE_BUILD_TESTING)
     target_link_libraries(${target}
       testing
       datrie
-      ${EXTRA_TARGET_LINK_LIBRARIES}
+      #${EXTRA_TARGET_LINK_LIBRARIES}
       )
 
     add_test(NAME ${target} COMMAND ${target})
@@ -183,7 +200,7 @@ target_compile_definitions(trietool PRIVATE
 
 target_link_libraries(trietool
   datrie
-  ${CMAKE_REQUIRED_LIBRARIES}
+  ${EXTRA_TARGET_LINK_LIBRARIES}
   )
 
 set(LIBDATRIE_HEADERS
