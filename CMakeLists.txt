@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.10...3.18)
 
 # Add cmake modules of this project to the module path
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules)
@@ -58,7 +58,6 @@ set(EXTRA_TARGET_LINK_LIBRARIES)
 include(CTest)
 include(GNUInstallDirs)
 include(CheckIncludeFile)
-include(CheckIncludeFiles)
 include(CheckFunctionExists)
 
 # start CONFIG_H checks
@@ -98,6 +97,7 @@ else()
 endif()
 
 list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
+message(STATUS "Possible extra link libraries found: ${EXTRA_TARGET_LINK_LIBRARIES}")
 
 if(WITH_COVERAGE)
     add_compile_options("--coverage")
@@ -117,7 +117,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options(/wd4100 /wd4201 /wd4456 /wd4457 /wd4702 /wd4815)
   # Without a byte order mark (BOM), Visual Studio assumes that the source
   # file is encoded using the current user code page, so we specify UTF-8.
-  add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE)
+  add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_WARNINGS)
   add_compile_options(/utf-8)
 endif()
 
