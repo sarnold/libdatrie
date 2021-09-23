@@ -5,9 +5,7 @@
  * Author:  Theppitak Karoonboonyanan <theppitak@gmail.com>
  */
 
-#ifndef NO_AUTOCONF
-# include <config.h>
-#endif
+#include <config.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -50,7 +50,7 @@ jobs:
 
     - name: Run tests
       run: |
-        tox -e ctest
+        tox -e ctest Ninja
 
     #- name: Upload artifacts
       #uses: actions/upload-artifact@v2

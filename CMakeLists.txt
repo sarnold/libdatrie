@@ -35,12 +35,6 @@ project(libdatrie LANGUAGES C CXX VERSION ${PACKAGE_VERSION})
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
-
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_DEBUG_POSTFIX d)
 
@@ -69,34 +63,38 @@ include(CTest)
 include(GNUInstallDirs)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
+include(CheckFunctionExists)
 
-#include(CheckSymbolExists)
-#include(CheckFunctionExists)
-#include(CheckCSourceCompiles)
-#include(FindIconv)
+set(STDC_HEADERS 1)
+check_include_file(dlfcn.h HAVE_DLFCN_H)
+check_include_file(inttypes.h HAVE_INTTYPES_H)
+check_include_file(limits.h HAVE_LIMITS_H)
+check_include_file(memory.h HAVE_MEMORY_H)
+check_include_file(stdint.h HAVE_STDINT_H)
+check_include_file(stdio.h HAVE_STDIO_H)
+check_include_file(stdlib.h HAVE_STDLIB_H)
+check_include_file(strings.h HAVE_STRINGS_H)
+check_include_file(string.h HAVE_STRING_H)
+check_include_file(sys/stat.h HAVE_SYS_STAT_H)
+check_include_file(sys/types.h HAVE_SYS_TYPES_H)
+check_include_file(unistd.h HAVE_UNISTD_H)
 
-#if(ICONV_FOUND)
-  #include_directories(${ICONV_INCLUDE_DIR})
-  #list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARY})
-#endif()
+check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
+check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
+check_function_exists(malloc HAVE_MALLOC)
+
+set(CONFIG_H ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CONFIG_H})
 
 find_path(ICONV_INCLUDE_DIR iconv.h)
 if(ICONV_INCLUDE_DIR)
   include_directories(${ICONV_INCLUDE_DIR})
 endif()
 
-if(MSVC OR APPLE)
-  check_include_files(localcharset.h HAVE_LOCALE_CHARSET)
-  if(HAVE_LOCALE_CHARSET)
-    add_compile_definitions(HAVE_LOCALE_CHARSET)
-  endif()
+if(WIN32 OR APPLE)
 	find_library(ICONV_LIB iconv)
 	find_library(CHARSET_LIB charset)
 else()
-  check_include_files(langinfo.h HAVE_LANGINFO_CODESET)
-  if(HAVE_LANGINFO_CODESET)
-    add_compile_definitions(HAVE_LANGINFO_CODESET)
-  endif()
 	set(ICONV_LIB "")
 	set(CHARSET_LIB "")
 endif()
@@ -121,6 +119,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options(/wd4100 /wd4201 /wd4456 /wd4457 /wd4702 /wd4815)
   # Without a byte order mark (BOM), Visual Studio assumes that the source
   # file is encoded using the current user code page, so we specify UTF-8.
+  add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE)
   add_compile_options(/utf-8)
 endif()
 
@@ -131,11 +130,26 @@ endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB datrie_src_glob
-  "${CMAKE_CURRENT_SOURCE_DIR}/datrie/*.c"
-  "${CMAKE_CURRENT_SOURCE_DIR}/datrie/*.h")
+set(LIBDATRIE_SOURCES
+    datrie/alpha-map.c
+    datrie/darray.c
+    datrie/dstring.c
+    datrie/fileutils.c
+    datrie/tail.c
+    datrie/trie.c
+    datrie/trie-string.c
+)
 
-set(LIBDATRIE_SOURCES ${datrie_src_glob})
+set(LIBDATRIE_HEADERS
+    datrie/alpha-map.h
+    datrie/trie.h
+    datrie/triedefs.h
+    datrie/typedefs.h
+)
+
+if(WIN32)
+    list(APPEND LIB_SRCS datrie/libdatrie.def)
+endif()
 
 if(BUILD_STATIC_LIBS)
   add_library(datriestatic STATIC ${LIBDATRIE_SOURCES})
@@ -144,9 +158,6 @@ endif()
 
 add_library(datrie SHARED ${LIBDATRIE_SOURCES})
 add_library(Datrie::Datrie ALIAS datrie)
-target_link_libraries(datrie
-  ${EXTRA_TARGET_LINK_LIBRARIES}
-  )
 
 # SCM_VERSION_INFO can be defined by cmake args and passed into the code as a
 # define here (see PACKAGE_VERSION near the top of this file)
@@ -184,7 +195,6 @@ if(LIBDATRIE_BUILD_TESTING)
     target_link_libraries(${target}
       testing
       datrie
-      #${EXTRA_TARGET_LINK_LIBRARIES}
       )
 
     add_test(NAME ${target} COMMAND ${target})
@@ -195,19 +205,11 @@ add_executable(trietool tools/trietool.c)
 target_compile_definitions(trietool PRIVATE
   # displayed by printf as macro, must be a string
   VERSION="${PACKAGE_VERSION}"
-  NO_AUTOCONF
   )
 
 target_link_libraries(trietool
   datrie
   ${EXTRA_TARGET_LINK_LIBRARIES}
-  )
-
-set(LIBDATRIE_HEADERS
-  datrie/alpha-map.h
-  datrie/trie.h
-  datrie/triedefs.h
-  datrie/typedefs.h
   )
 
 install(FILES ${LIBDATRIE_HEADERS}
@@ -229,7 +231,6 @@ install(TARGETS ${LIBDATRIE_LIBS} EXPORT datrieConfig
 
 install(EXPORT datrieConfig
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/datrie NAMESPACE datrie::)
-
 
 set(LIBDATRIE_PC ${CMAKE_CURRENT_BINARY_DIR}/datrie.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/datrie.pc.in ${LIBDATRIE_PC} @ONLY)
