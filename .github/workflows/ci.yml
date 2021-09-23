@@ -54,11 +54,13 @@ jobs:
       if: runner.os != 'Windows'
       run: |
         tox -e ctest
+        cat config.h
 
     - name: Run tests
       if: runner.os == 'Windows'
       run: |
         tox -e win32
+        cat config.h
 
     #- name: Upload artifacts
       #uses: actions/upload-artifact@v2

@@ -63,3 +63,4 @@ jobs:
         --build-and-test . build
         --build-options -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
         --test-command ctest -V --build-config "${{ matrix.build_type }}"
+        && cat config.h

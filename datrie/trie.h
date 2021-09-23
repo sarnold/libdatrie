@@ -27,12 +27,56 @@
 #ifndef __TRIE_H
 #define __TRIE_H
 
-#include <datrie/triedefs.h>
-#include <datrie/alpha-map.h>
-
-#ifdef __cplusplus
+#if __cplusplus
 extern "C" {
 #endif
+
+#ifdef _MSC_VER
+#ifndef _SIZE_T_DEFINED_
+# define _SIZE_T_DEFINED_
+typedef unsigned int size_t;
+#endif
+#endif
+
+#if !defined(_STDINT_H_) && (!defined(HAVE_STDINT_H) || !_HAVE_STDINT_H)
+#if defined(__GNUC__) || defined(__DMC__) || defined(__WATCOMC__)
+#define HAVE_STDINT_H
+#elif defined(_MSC_VER)
+typedef signed __int8 int8_t;
+typedef unsigned __int8 uint8_t;
+typedef signed __int16 int16_t;
+typedef unsigned __int16 uint16_t;
+typedef signed __int32 int32_t;
+typedef unsigned __int32 uint32_t;
+typedef signed __int64 int64_t;
+typedef unsigned __int64 uint64_t;
+#ifndef _UINTPTR_T_DEFINED
+#ifdef  _WIN64
+typedef unsigned __int64 uintptr_t;
+#else
+typedef unsigned int uintptr_t;
+#endif
+#define _UINTPTR_T_DEFINED
+#endif
+#else /* !__GNUC__ && !_MSC_VER */
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
+typedef signed long long int64_t;
+typedef unsigned long long uint64_t;
+#ifndef _SIZE_T_DEFINED_
+#define _SIZE_T_DEFINED_
+typedef unsigned int size_t;
+#endif
+typedef unsigned int uintptr_t;
+#endif /* __GNUC__ || _MSC_VER */
+#endif /* !_STDINT_H_ && !HAVE_STDINT_H */
+
+#include <datrie/triedefs.h>
+#include <datrie/alpha-map.h>
 
 /**
  * @file trie.h
