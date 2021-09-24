@@ -44,10 +44,17 @@ endif()
 
 option(BUILD_SHARED_LIBS "build shared libraries" ON)
 option(BUILD_STATIC_LIBS "Build static libraries" OFF)
+option(SKIP_TOOL "Skip trietool" OFF)
 
 option(LIBDATRIE_BUILD_TESTING "build and run tests" ON)
 
 set(WITH_COVERAGE "" CACHE PATH "build with test coverage enabled")
+
+set(LIBDATRIE_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+set(INCLUDE_DIRS ${LIBDATRIE_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR})
+
+include_directories(${INCLUDE_DIRS})
 
 set(INSTALL_PKGCONFIG_DIR
   "${CMAKE_INSTALL_PREFIX}/share/pkgconfig"
@@ -80,23 +87,6 @@ check_function_exists(malloc HAVE_MALLOC)
 set(CONFIG_H ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CONFIG_H})
 
-find_path(ICONV_INCLUDE_DIR iconv.h)
-if(ICONV_INCLUDE_DIR)
-  include_directories(${ICONV_INCLUDE_DIR})
-endif()
-
-if(WIN32 OR APPLE)
-	find_library(ICONV_LIB iconv)
-	find_library(CHARSET_LIB charset)
-else()
-	set(ICONV_LIB "")
-	set(CHARSET_LIB "")
-endif()
-
-list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
-message(STATUS "Found iconv include directory: ${ICONV_INCLUDE_DIR}")
-message(STATUS "Possible extra link libraries found: ${EXTRA_TARGET_LINK_LIBRARIES}")
-
 if(WITH_COVERAGE)
     add_compile_options("--coverage")
     add_link_options("--coverage")
@@ -115,17 +105,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options(/wd4100 /wd4201 /wd4456 /wd4457 /wd4702 /wd4815)
   # Without a byte order mark (BOM), Visual Studio assumes that the source
   # file is encoded using the current user code page, so we specify UTF-8.
-  add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE _CRT_SECURE_NO_WARNINGS)
   add_compile_options(/utf-8)
 endif()
 
 if(WIN32)
-  add_compile_definitions(_CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS)
+  add_compile_definitions(_CRT_SECURE_NO_WARNINGS _SCL_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE)
   add_compile_definitions(WIN32_LEAN_AND_MEAN UNICODE _UNICODE STRICT NOMINMAX)
 endif()
-
-add_compile_definitions(_GNU_SOURCE)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(LIBDATRIE_SOURCES
     datrie/alpha-map.c
@@ -194,11 +180,41 @@ if(LIBDATRIE_BUILD_TESTING)
   endforeach(target)
 endif()
 
-add_executable(trietool tools/trietool.c)
-target_link_libraries(trietool
-  datrie
-  ${EXTRA_TARGET_LINK_LIBRARIES}
-  )
+if(NOT SKIP_TOOL)
+  find_path(ICONV_INCLUDE_DIR iconv.h)
+  if(ICONV_INCLUDE_DIR)
+    include_directories(${ICONV_INCLUDE_DIR})
+  endif()
+
+  if(WIN32 OR APPLE)
+    find_library(ICONV_LIB NAMES iconv libiconv)
+    find_library(CHARSET_LIB NAMES charset libcharset)
+  else()
+    set(ICONV_LIB "")
+    set(CHARSET_LIB "")
+  endif()
+
+  list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
+  message(STATUS "Possible iconv include directory: ${ICONV_INCLUDE_DIR}")
+  message(STATUS "Possible extra link libraries found: ${EXTRA_TARGET_LINK_LIBRARIES}")
+
+  add_executable(trietool tools/trietool.c)
+  #target_include_directories(trietool
+    #PUBLIC
+    #${CMAKE_CURRENT_BINARY_DIR}
+    #${ICONV_INCLUDE_DIR}
+    #)
+
+  target_link_libraries(trietool
+    datrie
+    ${EXTRA_TARGET_LINK_LIBRARIES}
+    )
+
+  install(
+      TARGETS trietool
+      RUNTIME DESTINATION bin
+    )
+endif()
 
 install(FILES ${LIBDATRIE_HEADERS}
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

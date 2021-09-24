@@ -30,7 +30,7 @@
 #include <datrie/triedefs.h>
 #include <datrie/alpha-map.h>
 
-#if __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
