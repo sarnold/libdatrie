@@ -38,6 +38,11 @@ jobs:
             test_cmd: 'ctest'
 
     steps:
+    - name: Set git crlf/eol
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+
     - uses: actions/checkout@v2
 
     - name: setup miniconda
