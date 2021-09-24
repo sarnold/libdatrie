@@ -1,8 +1,5 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Define to 1 if you have the <dlfcn.h> header file. */
-#cmakedefine HAVE_DLFCN_H
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H
 
@@ -15,7 +12,7 @@
 /* Have locale_charset() */
 #cmakedefine HAVE_LOCALE_CHARSET
 
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
+/* Define to 1 if your system has a GNU libc compatible 'malloc' function, and
    to 0 otherwise. */
 #cmakedefine HAVE_MALLOC
 
@@ -31,9 +28,6 @@
 /* Define to 1 if you have the <stdlib.h> header file. */
 #cmakedefine HAVE_STDLIB_H
 
-/* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine HAVE_STRINGS_H
-
 /* Define to 1 if you have the <string.h> header file. */
 #cmakedefine HAVE_STRING_H
 
@@ -43,33 +37,29 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #cmakedefine HAVE_SYS_TYPES_H
 
-/* Define to 1 if you have the <unistd.h> header file. */
-#cmakedefine HAVE_UNISTD_H
-
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory in which libtool stores uninstalled libraries. */
 #cmakedefine LT_OBJDIR
 
 /* Name of package */
 #define PACKAGE "libdatrie"
 
 /* Define to the address where bug reports for this package should be sent. */
-#cmakedefine PACKAGE_BUGREPORT
+#cmakedefine PACKAGE_BUGREPORT "https://github.com/tlwg/libdatrie/issues"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "libdatrie"
 
 /* Define to the full name and version of this package. */
-#cmakedefine PACKAGE_STRING
+#cmakedefine PACKAGE_STRING "libdatrie "@VERSION@"
 
 /* Define to the one symbol short name of this package. */
-#cmakedefine PACKAGE_TARNAME
+#cmakedefine PACKAGE_TARNAME "libdatrie"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL "https://linux.thai.net/~thep/datrie/datrie.html"
 
 /* Define to the version of this package. */
-#cmakedefine PACKAGE_VERSION
+#cmakedefine PACKAGE_VERSION "@VERSION@"
 
 /* Define to 1 if you have the ANSI C header files. */
 #cmakedefine STDC_HEADERS 1
@@ -77,11 +67,11 @@
 /* Version number of package */
 #cmakedefine VERSION "@VERSION@"
 
-/* Define to empty if `const' does not conform to ANSI C. */
+/* Define to empty if 'const' does not conform to ANSI C. */
 #cmakedefine const
 
 /* Define to rpl_malloc if the replacement function should be used. */
 #cmakedefine malloc
 
-/* Define to `unsigned int' if <sys/types.h> does not define. */
+/* Define to 'unsigned int' if <sys/types.h> does not define. */
 #cmakedefine size_t

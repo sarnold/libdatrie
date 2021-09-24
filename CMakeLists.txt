@@ -62,18 +62,15 @@ include(CheckFunctionExists)
 
 # start CONFIG_H checks
 set(STDC_HEADERS 1)
-check_include_file(dlfcn.h HAVE_DLFCN_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
 check_include_file(limits.h HAVE_LIMITS_H)
 check_include_file(memory.h HAVE_MEMORY_H)
 check_include_file(stdint.h HAVE_STDINT_H)
 check_include_file(stdio.h HAVE_STDIO_H)
 check_include_file(stdlib.h HAVE_STDLIB_H)
-check_include_file(strings.h HAVE_STRINGS_H)
 check_include_file(string.h HAVE_STRING_H)
 check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
-check_include_file(unistd.h HAVE_UNISTD_H)
 
 check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
 check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
@@ -97,6 +94,7 @@ else()
 endif()
 
 list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
+message(STATUS "Found iconv include directory: ${ICONV_INCLUDE_DIR}")
 message(STATUS "Possible extra link libraries found: ${EXTRA_TARGET_LINK_LIBRARIES}")
 
 if(WITH_COVERAGE)
@@ -147,7 +145,7 @@ set(LIBDATRIE_HEADERS
 )
 
 if(WIN32)
-    list(APPEND LIB_SRCS datrie/libdatrie.def)
+    list(APPEND LIBDATRIE_SOURCES datrie/libdatrie.def)
 endif()
 
 if(BUILD_STATIC_LIBS)
