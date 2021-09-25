@@ -48,7 +48,12 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW64
-        install: mingw-w64-x86_64-toolchain make gcc
+        update: true
+        install: "mingw-w64-x86_64-toolchain
+                  mingw-w64-x86_64-libiconv
+                  mingw-w64-x86_64-cmake
+                  mingw-w64-x86_64-extra-cmake-modules
+                  mingw-w64-x86_64-ninja"
 
     - name: Run tests
       if: runner.os != 'Windows'
@@ -59,7 +64,7 @@ jobs:
     - name: Run tests
       if: runner.os == 'Windows'
       run: |
-        tox -e win32
+        tox -e ctest Ninja
         cat config.h
 
     #- name: Upload artifacts
