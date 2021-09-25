@@ -10,9 +10,6 @@ on:
 jobs:
   tests:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash
     env:
       OS: ${{ matrix.os }}
       PYTHON: ${{ matrix.python-version }}
@@ -23,13 +20,11 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-latest, windows-2019]
         python-version: [3.7, 3.9]
+    defaults:
+      run:
+        shell: bash
 
     steps:
-    - name: Set git crlf/eol
-      run: |
-        git config --global core.autocrlf false
-        git config --global core.eol lf
-
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -55,17 +50,24 @@ jobs:
                   mingw-w64-x86_64-extra-cmake-modules
                   mingw-w64-x86_64-ninja"
 
-    - name: Run tests
+    - name: Run tests (tox)
       if: runner.os != 'Windows'
       run: |
         tox -e ctest
         cat config.h
 
-    - name: Run tests
+    - name: Run tests (ctest)
       if: runner.os == 'Windows'
-      run: |
-        tox -e ctest Ninja
-        cat config.h
+      shell: msys2 {0}
+      run: >
+        ctest
+        --build-config Release
+        --build-generator 'MSYS Makefiles'
+        --build-and-test . build
+        --build-options -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
+        --test-command ctest -V
+        --build-config Release
+        && cat config.h
 
     #- name: Upload artifacts
       #uses: actions/upload-artifact@v2

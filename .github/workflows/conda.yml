@@ -24,18 +24,22 @@ jobs:
             generator: 'Unix Makefiles'
             build_type: 'RelWithDebInfo'
             test_cmd: 'ctest'
+            extra_opts: ''
           - os: 'macos-latest'
             generator: 'Unix Makefiles'
             build_type: 'RelWithDebInfo'
             test_cmd: 'ctest'
+            extra_opts: ''
           - os: 'windows-2016'
             generator: 'Visual Studio 15 2017 Win64'
             build_type: 'Release'
             test_cmd: 'trietool.exe'
+            extra_opts: '-DUTIL_CHARCNV_ICONV=OFF -DUTIL_CHARCNV_WINAPI=ON'
           - os: 'windows-2019'
             generator: 'Visual Studio 16 2019'
             build_type: 'Release'
             test_cmd: 'ctest'
+            extra_opts: '-DUTIL_CHARCNV_ICONV=OFF -DUTIL_CHARCNV_WINAPI=ON'
 
     steps:
     - name: Set git crlf/eol
@@ -70,7 +74,8 @@ jobs:
         --build-config "${{ matrix.build_type }}"
         --build-generator "${{ matrix.generator }}"
         --build-and-test . build
-        --build-options -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
+        --build-options "${{ matrix.extra_opts }}"
+        -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
         --test-command "${{ matrix.test_cmd }}" -V
         --build-config "${{ matrix.build_type }}"
         && cat config.h
