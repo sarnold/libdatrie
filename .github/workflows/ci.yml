@@ -44,11 +44,12 @@ jobs:
       with:
         msystem: MINGW64
         update: true
-        install: "mingw-w64-x86_64-toolchain
-                  mingw-w64-x86_64-libiconv
-                  mingw-w64-x86_64-cmake
-                  mingw-w64-x86_64-extra-cmake-modules
-                  mingw-w64-x86_64-ninja"
+        install: |
+          make
+          mingw-w64-x86_64-toolchain
+          mingw-w64-x86_64-libiconv
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-ninja
 
     - name: Run tests (tox)
       if: runner.os != 'Windows'
@@ -67,6 +68,7 @@ jobs:
         --build-options -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
         --test-command ctest -V
         --build-config Release
+        --output-on-failure
         && cat config.h
 
     #- name: Upload artifacts

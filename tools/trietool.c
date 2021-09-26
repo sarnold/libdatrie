@@ -14,11 +14,8 @@
 #if defined(HAVE_LOCALE_CHARSET)
 # include <localcharset.h>
 #elif defined (HAVE_LANGINFO_CODESET)
-# include <locale.h>
 # include <langinfo.h>
-# define locale_charset() nl_langinfo(CODESET)
-#else
-# define locale_charset() current_encoding()
+# define locale_charset()  nl_langinfo(CODESET)
 #endif
 #include <iconv.h>
 
@@ -95,16 +92,6 @@ main (int argc, char *argv[])
     close_conv (&env);
 
     return ret;
-}
-
-static char*
-current_encoding()
-{
-    char* env_lang = getenv("LANG");
-    char* xxx_code = env_lang == NULL ? NULL : strrchr(env_lang, '.');
-    char* cur_code = xxx_code == NULL ? "" : xxx_code+1;
-
-    return cur_code;
 }
 
 static void

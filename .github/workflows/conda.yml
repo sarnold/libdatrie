@@ -74,8 +74,7 @@ jobs:
         --build-config "${{ matrix.build_type }}"
         --build-generator "${{ matrix.generator }}"
         --build-and-test . build
-        --build-options "${{ matrix.extra_opts }}"
-        -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
+        --build-options -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX
         --test-command "${{ matrix.test_cmd }}" -V
         --build-config "${{ matrix.build_type }}"
         && cat config.h
