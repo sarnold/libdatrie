@@ -1,4 +1,3 @@
-EXPORTS
 alpha_map_new
 alpha_map_clone
 alpha_map_free
