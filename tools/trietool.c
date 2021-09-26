@@ -266,7 +266,7 @@ decode_switch (int argc, char *argv[], ProgEnv *env)
         if (strcmp (argv[opt_idx], "-h") == 0 ||
             strcmp (argv[opt_idx], "--help") == 0)
         {
-            usage (argv[0], EXIT_FAILURE);
+            usage (argv[0], EXIT_SUCCESS);
         } else if (strcmp (argv[opt_idx], "-V") == 0 ||
                    strcmp (argv[opt_idx], "--version") == 0)
         {
