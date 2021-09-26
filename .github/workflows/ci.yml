@@ -57,6 +57,13 @@ jobs:
         tox -e ctest
         cat config.h
 
+    - name: Run tests (tox)
+      if: runner.os == 'Windows'
+      run: |
+        tox -e win32
+        cat config.h
+        tox -e clean
+
     - name: Run tests (ctest)
       if: runner.os == 'Windows'
       shell: msys2 {0}
