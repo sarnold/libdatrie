@@ -1,4 +1,5 @@
-name: Smoke
+# CI with autotools fun
+name: Autotools
 
 on:
   workflow_dispatch:
@@ -87,7 +88,8 @@ jobs:
         autoreconf -fiv
         ./configure --disable-doxygen-doc
         cat config.h
-        make check
+        make
+        ./tools/trietool.exe -V
       env:
         datrie_cv_have_version_script: no
 
