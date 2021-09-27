@@ -21,12 +21,16 @@ if(APPLE)
     find_path(ICONV_INCLUDE_DIR iconv.h
              PATHS
              /opt/local/include/
+	     /msys/
+	     /msys64/
              NO_CMAKE_SYSTEM_PATH
     )
 
     find_library(ICONV_LIBRARIES NAMES iconv libiconv c
              PATHS
              /opt/local/lib/
+	     /msys/
+	     /msys64/
              NO_CMAKE_SYSTEM_PATH
     )
 endif()
