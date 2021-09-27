@@ -106,6 +106,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   # Without a byte order mark (BOM), Visual Studio assumes that the source
   # file is encoded using the current user code page, so we specify UTF-8.
   add_compile_options(/utf-8)
+  find_library(CHARSET_LIB NAMES charset libcharset)
 endif()
 
 if(WIN32)
@@ -202,7 +203,6 @@ if(NOT SKIP_TOOL)
 
     if(iconv_FOUND)
       set(HAVE_ICONV TRUE)
-      #find_library(CHARSET_LIB NAMES charset libcharset)
       include_directories(${ICONV_INCLUDE_DIR})
       list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARIES} ${CHARSET_LIB})
       if(${ICONV_SECOND_ARGUMENT_IS_CONST})
