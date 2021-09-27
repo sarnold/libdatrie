@@ -2,14 +2,14 @@ name: Conda Env
 
 on:
   workflow_dispatch:
-  #pull_request:
-  #push:
-    #branches:
-      #- master
-    #paths-ignore:
-      #- '**.md'
-      #- '**.rst'
-      #- '**.sh'
+  pull_request:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.md'
+      - '**.rst'
+      - '**.sh'
 
 jobs:
   build:
@@ -24,22 +24,18 @@ jobs:
             generator: 'Unix Makefiles'
             build_type: 'RelWithDebInfo'
             test_cmd: 'ctest'
-            extra_opts: ''
           - os: 'macos-latest'
             generator: 'Unix Makefiles'
             build_type: 'RelWithDebInfo'
             test_cmd: 'ctest'
-            extra_opts: ''
           - os: 'windows-2016'
             generator: 'Visual Studio 15 2017 Win64'
             build_type: 'Release'
             test_cmd: 'trietool.exe'
-            extra_opts: '-DUTIL_CHARCNV_ICONV=OFF -DUTIL_CHARCNV_WINAPI=ON'
           - os: 'windows-2019'
             generator: 'Visual Studio 16 2019'
             build_type: 'Release'
-            test_cmd: 'ctest'
-            extra_opts: '-DUTIL_CHARCNV_ICONV=OFF -DUTIL_CHARCNV_WINAPI=ON'
+            test_cmd: 'trietool.exe'
 
     steps:
     - name: Set git crlf/eol
