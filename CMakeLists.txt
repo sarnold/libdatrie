@@ -106,7 +106,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   # Without a byte order mark (BOM), Visual Studio assumes that the source
   # file is encoded using the current user code page, so we specify UTF-8.
   add_compile_options(/utf-8)
-  find_library(CHARSET_LIB NAMES charset libcharset)
 endif()
 
 if(WIN32)
@@ -140,8 +139,10 @@ if(BUILD_STATIC_LIBS)
   set_target_properties(datriestatic PROPERTIES OUTPUT_NAME datrie)
 endif()
 
-add_library(datrie SHARED ${LIBDATRIE_SOURCES})
-add_library(Datrie::Datrie ALIAS datrie)
+if(BUILD_SHARED_LIBS)
+  add_library(datrie SHARED ${LIBDATRIE_SOURCES})
+  add_library(Datrie::Datrie ALIAS datrie)
+endif()
 
 set_target_properties(datrie
   PROPERTIES
