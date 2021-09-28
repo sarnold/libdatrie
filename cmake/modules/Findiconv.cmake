@@ -19,23 +19,25 @@ include(CMakePushCheckState)
 
 if(APPLE)
     find_path(ICONV_INCLUDE_DIR iconv.h
-             PATHS
-             /opt/local/include/
-	     /msys/
-	     /msys64/
-             NO_CMAKE_SYSTEM_PATH
+        PATHS
+        /opt/local/include/
+        NO_CMAKE_SYSTEM_PATH
     )
 
     find_library(ICONV_LIBRARIES NAMES iconv libiconv c
-             PATHS
-             /opt/local/lib/
-	     /msys/
-	     /msys64/
-             NO_CMAKE_SYSTEM_PATH
+        PATHS
+        /opt/local/lib/
+        NO_CMAKE_SYSTEM_PATH
     )
 endif()
 
-find_path(ICONV_INCLUDE_DIR iconv.h PATHS /opt/local/include /sw/include /usr/include /usr/local/include)
+find_path(ICONV_INCLUDE_DIR iconv.h
+    PATHS
+    /opt/local/include
+    /sw/include
+    /usr/include
+    /usr/local/include
+    )
 
 string(REGEX REPLACE "(.*)/include/?" "\\1" ICONV_INCLUDE_BASE_DIR "${ICONV_INCLUDE_DIR}")
 
@@ -46,18 +48,18 @@ if(NOT ICONV_LIBRARIES AND UNIX)
 endif()
 
 if(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
-	cmake_push_check_state(RESET)
+    cmake_push_check_state(RESET)
     set(CMAKE_REQUIRED_INCLUDES ${ICONV_INCLUDE_DIR})
-	set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARIES})
-	if(MSVC)
-		set(CMAKE_REQUIRED_FLAGS /we4028 /fp:fast /wd4251 /Oi)
-	endif()
+    set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARIES})
+    if(MSVC)
+        set(CMAKE_REQUIRED_FLAGS /we4028 /fp:fast /wd4251 /Oi)
+    endif()
     check_prototype_definition("iconv"
-            "size_t iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)"
-            "-1"
-            "iconv.h"
-            ICONV_SECOND_ARGUMENT_IS_CONST)
-	cmake_pop_check_state()
+        "size_t iconv(iconv_t cd, const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft)"
+        "-1"
+        "iconv.h"
+        ICONV_SECOND_ARGUMENT_IS_CONST)
+    cmake_pop_check_state()
 endif()
 
 include(FindPackageHandleStandardArgs)
@@ -65,8 +67,8 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(iconv DEFAULT_MSG ICONV_INCLUDE_DIR ICONV_LIBR
 
 # Copy the results to the output variables.
 if(iconv_FOUND)
-  set(ICONV_LIBRARY ${ICONV_LIBRARIES})
-  set(ICONV_INCLUDE_DIRS ${ICONV_INCLUDE_DIR})
+    set(ICONV_LIBRARY ${ICONV_LIBRARIES})
+    set(ICONV_INCLUDE_DIRS ${ICONV_INCLUDE_DIR})
 endif()
 
 mark_as_advanced(
