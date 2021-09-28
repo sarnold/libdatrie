@@ -82,7 +82,7 @@ check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 check_function_exists(malloc HAVE_MALLOC)
 
 if(WIN32 OR MSYS)
-  find_path(ICONV_INCLUDE_DIR charset.h
+  find_path(ICONV_INCLUDE_DIR localcharset.h
       PATHS
           /opt/local/include
           /sw/include
