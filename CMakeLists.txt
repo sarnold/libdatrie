@@ -66,6 +66,7 @@ include(CTest)
 include(GNUInstallDirs)
 include(CheckIncludeFile)
 include(CheckFunctionExists)
+include(CheckSymbolExists)
 
 # start CONFIG_H checks
 set(STDC_HEADERS 1)
@@ -78,10 +79,10 @@ check_include_file(stdlib.h HAVE_STDLIB_H)
 check_include_file(string.h HAVE_STRING_H)
 check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
+check_function_exists(malloc HAVE_MALLOC)
 
 if(WIN32 OR MSYS)
   find_path(ICONV_INCLUDE_DIR charset.h
-      PATH_SUFFIXES include mingw64\include
       PATHS
           /opt/local/include
           /sw/include
@@ -95,9 +96,8 @@ if(WIN32 OR MSYS)
   message(STATUS "We found a windows inlcude path: ${ICONV_INCLUDE_DIR}")
 endif()
 
-check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
-check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
-check_function_exists(malloc HAVE_MALLOC)
+check_symbol_exists(nl_langinfo "langinfo.h" HAVE_LANGINFO_CODESET)
+check_symbol_exists(locale_charset "localcharset.h" "charset.h" HAVE_LOCALE_CHARSET)
 
 if(WITH_COVERAGE)
     add_compile_options(--coverage)
