@@ -35,17 +35,18 @@ jobs:
       with:
         fetch-depth: 0
 
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
     - name: Setup msys POSIX environment
       uses: msys2/setup-msys2@v2
       if: runner.os == 'Windows'
       with:
         msystem: MSYS
         update: false
+        path-type: inherit
         install: git gcc make cmake ninja libiconv-devel
-
-    - uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
 
     - name: Add python requirements
       run: |
@@ -62,4 +63,4 @@ jobs:
       shell: msys2 {0}
       run: |
         set MSYSTEM=MSYS
-        tox -e win32
+        tox -e win32 Ninja
