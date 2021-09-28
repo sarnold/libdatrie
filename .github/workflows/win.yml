@@ -7,9 +7,9 @@ on:
     branches:
       - master
 
-env:
-  CTEST_TIME_TIMEOUT: "5"
-  CMAKE_GENERATOR: Ninja
+#env:
+  #CTEST_TIME_TIMEOUT: "5"
+  #CMAKE_GENERATOR: Ninja
 
 jobs:
   msys2-build:
@@ -17,22 +17,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - msystem: MSYS
-            arch: x86_64
-            generator: 'MSYS Makefiles'
-            build_cfg: Debug
-            test_cmd: trietool.exe
-          - msystem: MINGW64
-            arch: x86_64
-            generator: 'MSYS Makefiles'
-            build_cfg: Debug
-            test_cmd: trietool.exe
-          - msystem: MINGW32
-            arch: i686
-            generator: 'MSYS Makefiles'
-            build_cfg: Debug
-            test_cmd: trietool.exe
+        include: [
+          { msystem: MSYS,     arch: x86_64 },
+          { msystem: MINGW64,  arch: x86_64 },
+          { msystem: MINGW32,  arch: i686   }
+        ]
     defaults:
       run:
         shell: msys2 {0}
@@ -47,6 +36,7 @@ jobs:
         update: false
         install: >-
           git
+          make
           mingw-w64-${{ matrix.arch }}-gcc
           mingw-w64-${{ matrix.arch }}-cmake
           mingw-w64-${{ matrix.arch }}-ninja
@@ -66,16 +56,22 @@ jobs:
           ninja
           libiconv-devel
 
-    - name: Build with ctest
-      run: >-
-        ctest
-        --build-config "${{ matrix.build_cfg }}"
-        --build-generator "${{ matrix.generator }}"
-        --build-and-test . build --parallel
-        --build-options -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-        --test-command "${{ matrix.test_cmd }}" -V
-        --build-config "${{ matrix.build_cfg }}"
-        && cat config.h
+    - run: >-
+        cmake
+        -Wdev
+        -B build
+        -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+      env:
+        CC: gcc
+        CXX: g++
+
+    - name: CMake build
+      run: cmake --build build --parallel
+
+    - name: Trietool
+      run: ./build/trietool.exe -V
+      #run: ctest --test-dir build --output-on-failure --parallel -V
 
     - uses: actions/upload-artifact@v1
       if: failure()

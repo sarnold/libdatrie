@@ -130,9 +130,9 @@ set(LIBDATRIE_HEADERS
     datrie/typedefs.h
 )
 
-if(WIN32)
-    list(APPEND LIBDATRIE_SOURCES datrie/libdatrie.def)
-endif()
+#if(WIN32)
+    #list(APPEND LIBDATRIE_SOURCES datrie/libdatrie.def)
+#endif()
 
 if(BUILD_STATIC_LIBS)
   add_library(datriestatic STATIC ${LIBDATRIE_SOURCES})
