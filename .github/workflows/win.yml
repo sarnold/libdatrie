@@ -67,7 +67,9 @@ jobs:
         CXX: g++
 
     - name: CMake build
-      run: cmake --build build --parallel
+      run: |
+        cat config.h
+        cmake --build build --parallel
 
     - name: Trietool
       run: ./build/trietool.exe -V
