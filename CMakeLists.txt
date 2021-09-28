@@ -209,19 +209,25 @@ if(NOT SKIP_TOOL)
       if(${ICONV_SECOND_ARGUMENT_IS_CONST})
         set(ICONV_CONST "const")
       endif()
+      # this is really just a hack for conda
+      if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+        if(DEFINED ENV{CONDA_PREFIX})
+          add_compile_definitions(HAVE_LOCALE_CHARSET)
+          find_library(CHARSET_LIB NAMES charset libcharset)
+          list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${CHARSET_LIB})
+        endif()
+      endif()
     else()
       message(WARNING "No iconv support")
     endif()
   endif()
 
-  #list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
   message(STATUS "Possible iconv include directory: ${ICONV_INCLUDE_DIR}")
   message(STATUS "Possible extra link libraries found: ${EXTRA_TARGET_LINK_LIBRARIES}")
 
   add_executable(trietool tools/trietool.c)
   #target_include_directories(trietool
     #PUBLIC
-    #${CMAKE_CURRENT_BINARY_DIR}
     #${ICONV_INCLUDE_DIR}
     #)
 
