@@ -83,10 +83,6 @@ check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
 check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
 check_function_exists(malloc HAVE_MALLOC)
 
-# generate CONFIG_H
-set(CONFIG_H ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CONFIG_H})
-
 if(WITH_COVERAGE)
     add_compile_options(--coverage)
     add_link_options(--coverage)
@@ -261,6 +257,10 @@ install(TARGETS ${LIBDATRIE_LIBS} EXPORT datrieConfig
 
 install(EXPORT datrieConfig
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/datrie NAMESPACE datrie::)
+
+# generate CONFIG_H
+set(CONFIG_H ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CONFIG_H})
 
 set(LIBDATRIE_PC ${CMAKE_CURRENT_BINARY_DIR}/datrie.pc)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/datrie.pc.in ${LIBDATRIE_PC} @ONLY)
