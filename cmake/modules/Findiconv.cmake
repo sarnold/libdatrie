@@ -52,7 +52,7 @@ if(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES)
     cmake_push_check_state(RESET)
     set(CMAKE_REQUIRED_INCLUDES ${ICONV_INCLUDE_DIR})
     set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARIES})
-    if(MSVC)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set(CMAKE_REQUIRED_FLAGS /we4028 /fp:fast /wd4251 /Oi)
     endif()
     check_prototype_definition("iconv"
