@@ -19,25 +19,26 @@ include(CMakePushCheckState)
 
 if(APPLE)
     find_path(ICONV_INCLUDE_DIR iconv.h
-        PATHS
+    PATHS
         /opt/local/include/
         NO_CMAKE_SYSTEM_PATH
     )
 
     find_library(ICONV_LIBRARIES NAMES iconv libiconv c
-        PATHS
+    PATHS
         /opt/local/lib/
         NO_CMAKE_SYSTEM_PATH
     )
 endif()
 
 find_path(ICONV_INCLUDE_DIR iconv.h
+    PATH_SUFFIXES include mingw64/include
     PATHS
-    ENV CONDA_PREFIX
-    /opt/local/include
-    /sw/include
-    /usr/include
-    /usr/local/include
+        ENV CONDA_PREFIX
+        /opt/local/include
+        /sw/include
+        /usr/include
+        /usr/local/include
     )
 
 string(REGEX REPLACE "(.*)/include/?" "\\1" ICONV_INCLUDE_BASE_DIR "${ICONV_INCLUDE_DIR}")
