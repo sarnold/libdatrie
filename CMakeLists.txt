@@ -80,8 +80,8 @@ check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 
 if(WIN32 OR MSYS)
-  find_path(ICONV_INCLUDE_DIR iconv.h
-      PATH_SUFFIXES include mingw64/include
+  find_path(ICONV_INCLUDE_DIR charset.h
+      PATH_SUFFIXES include mingw64\include
       PATHS
           /opt/local/include
           /sw/include
