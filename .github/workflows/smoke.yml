@@ -35,6 +35,14 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup msys POSIX environment
+      uses: msys2/setup-msys2@v2
+      if: runner.os == 'Windows'
+      with:
+        msystem: MSYS
+        update: false
+        install: git gcc make cmake ninja libiconv-devel
+
     - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
@@ -44,11 +52,6 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install tox
 
-    - name: Add 64-bit mingw-w64 to the PATH
-      if: runner.os == 'Windows'
-      run: |
-        echo "c:/msys64/bin;c:/msys64/mingw64/bin" >> $GITHUB_PATH
-
     - name: Run tests
       if: runner.os != 'Windows'
       run: |
@@ -56,5 +59,7 @@ jobs:
 
     - name: Run tests
       if: runner.os == 'Windows'
+      shell: msys2 {0}
       run: |
+        set MSYSTEM=MSYS
         tox -e win32
