@@ -33,6 +33,7 @@ endif()
 
 find_path(ICONV_INCLUDE_DIR iconv.h
     PATHS
+    ENV CONDA_PREFIX
     /opt/local/include
     /sw/include
     /usr/include
