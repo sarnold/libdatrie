@@ -200,7 +200,7 @@ if(NOT SKIP_TOOL)
 
     if(iconv_FOUND)
       set(HAVE_ICONV TRUE)
-      include_directories(${ICONV_INCLUDE_DIR})
+      include_directories(SYSTEM ${ICONV_INCLUDE_DIR})
       list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARIES})
       if(${ICONV_SECOND_ARGUMENT_IS_CONST})
         set(ICONV_CONST "const")
