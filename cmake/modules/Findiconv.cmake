@@ -42,7 +42,7 @@ find_path(ICONV_INCLUDE_DIR iconv.h
 
 string(REGEX REPLACE "(.*)/include/?" "\\1" ICONV_INCLUDE_BASE_DIR "${ICONV_INCLUDE_DIR}")
 
-find_library(ICONV_LIBRARIES NAMES libiconv iconv libiconv.lib libiconv.dylib)
+find_library(ICONV_LIBRARIES NAMES libiconv iconv iconv64 libiconv.lib libiconv.dylib)
 
 if(NOT ICONV_LIBRARIES AND UNIX)
     find_library(ICONV_LIBRARIES NAMES c libc)
