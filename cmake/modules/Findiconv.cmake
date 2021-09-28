@@ -32,7 +32,6 @@ if(APPLE)
 endif()
 
 find_path(ICONV_INCLUDE_DIR iconv.h
-    PATH_SUFFIXES include mingw64/include
     PATHS
         ENV CONDA_PREFIX
         /opt/local/include

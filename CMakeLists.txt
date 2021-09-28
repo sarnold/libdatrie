@@ -79,6 +79,22 @@ check_include_file(string.h HAVE_STRING_H)
 check_include_file(sys/stat.h HAVE_SYS_STAT_H)
 check_include_file(sys/types.h HAVE_SYS_TYPES_H)
 
+if(WIN32 OR MSYS)
+  find_path(ICONV_INCLUDE_DIR iconv.h
+      PATH_SUFFIXES include mingw64/include
+      PATHS
+          /opt/local/include
+          /sw/include
+          /usr/include
+          /usr/local/include
+    )
+
+  if(ICONV_INCLUDE_DIR)
+    include_directories(${ICONV_INCLUDE_DIR})
+  endif()
+  message(STATUS "We found a windows inlcude path: ${ICONV_INCLUDE_DIR}")
+endif()
+
 check_function_exists(nl_langinfo HAVE_LANGINFO_CODESET)
 check_function_exists(locale_charset HAVE_LOCALE_CHARSET)
 check_function_exists(malloc HAVE_MALLOC)
@@ -199,7 +215,6 @@ if(NOT SKIP_TOOL)
     find_package(iconv)
 
     if(iconv_FOUND)
-      set(HAVE_ICONV TRUE)
       include_directories(SYSTEM ${ICONV_INCLUDE_DIR})
       list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIBRARIES})
       if(${ICONV_SECOND_ARGUMENT_IS_CONST})
