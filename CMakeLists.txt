@@ -83,21 +83,24 @@ check_function_exists(malloc HAVE_MALLOC)
 
 if(WIN32 OR MSYS)
   find_path(ICONV_INCLUDE_DIR localcharset.h
-      PATHS
-          /opt/local/include
-          /sw/include
-          /usr/include
-          /usr/local/include
-    )
+    PATHS
+      /opt/local/include
+      /sw/include
+      /usr/include
+      /usr/local/include
+  )
 
   if(ICONV_INCLUDE_DIR)
-    include_directories(${ICONV_INCLUDE_DIR})
+    message(STATUS "We found a windows inlcude path: ${ICONV_INCLUDE_DIR}")
+    set(CMAKE_REQUIRED_INCLUDES ${ICONV_INCLUDE_DIR})
+    check_symbol_exists(nl_langinfo "langinfo.h" HAVE_LANGINFO_CODESET)
+    check_symbol_exists(locale_charset "localcharset.h" "charset.h" HAVE_LOCALE_CHARSET)
+    set(CMAKE_REQUIRED_INCLUDES)
   endif()
-  message(STATUS "We found a windows inlcude path: ${ICONV_INCLUDE_DIR}")
+else()
+  check_symbol_exists(nl_langinfo "langinfo.h" HAVE_LANGINFO_CODESET)
+  check_symbol_exists(locale_charset "localcharset.h" "charset.h" HAVE_LOCALE_CHARSET)
 endif()
-
-check_symbol_exists(nl_langinfo "langinfo.h" HAVE_LANGINFO_CODESET)
-check_symbol_exists(locale_charset "localcharset.h" "charset.h" HAVE_LOCALE_CHARSET)
 
 if(WITH_COVERAGE)
     add_compile_options(--coverage)
