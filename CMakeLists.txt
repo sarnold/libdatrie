@@ -214,7 +214,7 @@ if(NOT SKIP_TOOL)
     list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
   endif()
 
-  if(WIN32)
+  if(WIN32 OR MSYS)
     find_package(iconv)
 
     if(iconv_FOUND)
