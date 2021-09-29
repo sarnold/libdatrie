@@ -214,7 +214,7 @@ if(NOT SKIP_TOOL)
     list(APPEND EXTRA_TARGET_LINK_LIBRARIES ${ICONV_LIB} ${CHARSET_LIB})
   endif()
 
-  if(WIN32 OR MSYS)
+  if(WIN32)
     find_package(iconv)
 
     if(iconv_FOUND)
@@ -224,7 +224,7 @@ if(NOT SKIP_TOOL)
         set(ICONV_CONST "const")
       endif()
       # this is really just a hack for conda
-      if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+      if(MSVC)
         if(DEFINED ENV{CONDA_PREFIX})
           add_compile_definitions(HAVE_LOCALE_CHARSET)
           find_library(CHARSET_LIB NAMES charset libcharset)

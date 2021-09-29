@@ -45,7 +45,7 @@ jobs:
       with:
         msystem: MSYS
         update: false
-        path-type: inherit
+        #path-type: inherit
         install: git gcc make cmake ninja libiconv-devel
 
     - name: Add python requirements
