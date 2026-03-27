@@ -266,12 +266,12 @@ decode_switch (int argc, char *argv[], ProgEnv *env)
         if (strcmp (argv[opt_idx], "-h") == 0 ||
             strcmp (argv[opt_idx], "--help") == 0)
         {
-            usage (argv[0], EXIT_FAILURE);
+            usage (argv[0], EXIT_SUCCESS);
         } else if (strcmp (argv[opt_idx], "-V") == 0 ||
                    strcmp (argv[opt_idx], "--version") == 0)
         {
-            printf ("%s\n", VERSION);
-            exit (EXIT_FAILURE);
+            fprintf(stdout, "%s\n", VERSION);
+            exit (EXIT_SUCCESS);
         } else if (strcmp (argv[opt_idx], "-p") == 0 ||
                    strcmp (argv[opt_idx], "--path") == 0)
         {
@@ -532,7 +532,7 @@ command_query (int argc, char *argv[], ProgEnv *env)
 
     conv_to_alpha (env, argv[0], key_alpha, N_ELEMENTS (key_alpha));
     if (trie_retrieve (env->trie, key_alpha, &data)) {
-        printf ("%d\n", data);
+        fprintf (stdout, "%d\n", data);
     } else {
         fprintf (stderr, "query: Key '%s' not found.\n", argv[0]);
     }
@@ -547,7 +547,7 @@ list_enum_func (const AlphaChar *key, TrieData key_data, void *user_data)
     char        key_locale[1024];
 
     conv_from_alpha (env, key, key_locale, N_ELEMENTS (key_locale));
-    printf ("%s\t%d\n", key_locale, key_data);
+    fprintf (stdout, "%s\t%d\n", key_locale, key_data);
     return TRUE;
 }
 
@@ -562,45 +562,45 @@ command_list (int argc, char *argv[], ProgEnv *env)
 static void
 usage (const char *prog_name, int exit_status)
 {
-    printf ("%s - double-array trie manipulator\n", prog_name);
-    printf ("Usage: %s [OPTION]... TRIE CMD ARG ...\n", prog_name);
-    printf ("Options:\n");
-    printf (
+    fprintf (stdout, "%s - double-array trie manipulator\n", prog_name);
+    fprintf (stdout, "Usage: %s [OPTION]... TRIE CMD ARG ...\n", prog_name);
+    fprintf (stdout, "Options:\n");
+    fprintf (stdout,
         "  -p, --path DIR           set trie directory to DIR [default=.]\n"
     );
-    printf (
+    fprintf (stdout,
         "  -h, --help               display this help and exit\n"
     );
-    printf (
+    fprintf (stdout,
         "  -V, --version            output version information and exit\n"
     );
-    printf ("\n");
-    printf ("Commands:\n");
-    printf (
+    fprintf (stdout, "\n");
+    fprintf (stdout, "Commands:\n");
+    fprintf (stdout,
         "  add  WORD DATA ...\n"
         "      Add WORD with DATA to trie\n"
     );
-    printf (
+    fprintf (stdout,
         "  add-list [OPTION] LISTFILE\n"
         "      Add words and data listed in LISTFILE to trie\n"
         "      Options:\n"
         "          -e, --encoding ENC    specify character encoding of LISTFILE\n"
     );
-    printf (
+    fprintf (stdout,
         "  delete WORD ...\n"
         "      Delete WORD from trie\n"
     );
-    printf (
+    fprintf (stdout,
         "  delete-list [OPTION] LISTFILE\n"
         "      Delete words listed in LISTFILE from trie\n"
         "      Options:\n"
         "          -e, --encoding ENC    specify character encoding of LISTFILE\n"
     );
-    printf (
+    fprintf (stdout,
         "  query WORD\n"
         "      Query WORD data from trie\n"
     );
-    printf (
+    fprintf (stdout,
         "  list\n"
         "      List all words in trie\n"
     );
